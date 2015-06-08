@@ -68,6 +68,9 @@ endif
 valgrind: $(TEST_PROGS)
 	$(LIBTOOL) --mode=execute valgrind --leak-check=full ./test-libbson -f -p
 
+lldb: $(TEST_PROGS)
+	$(LIBTOOL) --mode=execute lldb ./test-libbson
+
 DISTCLEANFILES += test.log
 
 
