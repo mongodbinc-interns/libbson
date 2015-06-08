@@ -72,12 +72,15 @@ bson_value_copy (const bson_value_t *src, /* IN */
       dst->value.v_regex.options = bson_strdup (src->value.v_regex.options);
       break;
    case BSON_TYPE_DBPOINTER:
-      dst->value.v_dbpointer.collection_len = src->value.v_dbpointer.collection_len;
-      dst->value.v_dbpointer.collection = bson_malloc (src->value.v_dbpointer.collection_len + 1);
+      dst->value.v_dbpointer.collection_len =
+         src->value.v_dbpointer.collection_len;
+      dst->value.v_dbpointer.collection = bson_malloc (
+         src->value.v_dbpointer.collection_len + 1);
       memcpy (dst->value.v_dbpointer.collection,
               src->value.v_dbpointer.collection,
               dst->value.v_dbpointer.collection_len);
-      dst->value.v_dbpointer.collection [dst->value.v_dbpointer.collection_len] = '\0';
+      dst->value.v_dbpointer.collection [dst->value.v_dbpointer.collection_len]
+         = '\0';
       bson_oid_copy (&src->value.v_dbpointer.oid, &dst->value.v_dbpointer.oid);
       break;
    case BSON_TYPE_CODE:
@@ -98,13 +101,15 @@ bson_value_copy (const bson_value_t *src, /* IN */
       break;
    case BSON_TYPE_CODEWSCOPE:
       dst->value.v_codewscope.code_len = src->value.v_codewscope.code_len;
-      dst->value.v_codewscope.code = bson_malloc (src->value.v_codewscope.code_len + 1);
+      dst->value.v_codewscope.code = bson_malloc (
+         src->value.v_codewscope.code_len + 1);
       memcpy (dst->value.v_codewscope.code,
               src->value.v_codewscope.code,
               dst->value.v_codewscope.code_len);
       dst->value.v_codewscope.code [dst->value.v_codewscope.code_len] = '\0';
       dst->value.v_codewscope.scope_len = src->value.v_codewscope.scope_len;
-      dst->value.v_codewscope.scope_data = bson_malloc (src->value.v_codewscope.scope_len);
+      dst->value.v_codewscope.scope_data = bson_malloc (
+         src->value.v_codewscope.scope_len);
       memcpy (dst->value.v_codewscope.scope_data,
               src->value.v_codewscope.scope_data,
               dst->value.v_codewscope.scope_len);
@@ -118,6 +123,9 @@ bson_value_copy (const bson_value_t *src, /* IN */
       break;
    case BSON_TYPE_INT64:
       dst->value.v_int64 = src->value.v_int64;
+      break;
+   case BSON_TYPE_DEC128:
+      dst->value.v_dec128 = src->value.v_dec128;
       break;
    case BSON_TYPE_UNDEFINED:
    case BSON_TYPE_NULL:
@@ -172,6 +180,7 @@ bson_value_destroy (bson_value_t *value) /* IN */
    case BSON_TYPE_INT32:
    case BSON_TYPE_TIMESTAMP:
    case BSON_TYPE_INT64:
+   case BSON_TYPE_DEC128:
    case BSON_TYPE_MAXKEY:
    case BSON_TYPE_MINKEY:
    case BSON_TYPE_EOD:
