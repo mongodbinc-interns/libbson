@@ -87,6 +87,9 @@ BSON_BEGIN_DECLS
 #define BSON_ITER_HOLDS_INT64(iter) \
    (bson_iter_type ((iter)) == BSON_TYPE_INT64)
 
+#define BSON_ITER_HOLDS_DEC128(iter) \
+   (bson_iter_type (iter)) == BSON_TYPE_DEC128
+
 #define BSON_ITER_HOLDS_MAXKEY(iter) \
    (bson_iter_type ((iter)) == BSON_TYPE_MAXKEY)
 
@@ -121,16 +124,16 @@ bson_iter_utf8_len_unsafe (const bson_iter_t *iter)
 
 
 void
-bson_iter_array (const bson_iter_t   *iter,
-                 uint32_t            *array_len,
-                 const uint8_t      **array);
+bson_iter_array (const bson_iter_t *iter,
+                 uint32_t          *array_len,
+                 const uint8_t    **array);
 
 
 void
-bson_iter_binary (const bson_iter_t   *iter,
-                  bson_subtype_t      *subtype,
-                  uint32_t            *binary_len,
-                  const uint8_t      **binary);
+bson_iter_binary (const bson_iter_t *iter,
+                  bson_subtype_t    *subtype,
+                  uint32_t          *binary_len,
+                  const uint8_t    **binary);
 
 
 const char *
@@ -157,10 +160,10 @@ bson_iter_code_unsafe (const bson_iter_t *iter,
 
 
 const char *
-bson_iter_codewscope (const bson_iter_t   *iter,
-                      uint32_t            *length,
-                      uint32_t            *scope_len,
-                      const uint8_t      **scope);
+bson_iter_codewscope (const bson_iter_t *iter,
+                      uint32_t          *length,
+                      uint32_t          *scope_len,
+                      const uint8_t    **scope);
 
 
 void
@@ -171,9 +174,9 @@ bson_iter_dbpointer (const bson_iter_t *iter,
 
 
 void
-bson_iter_document (const bson_iter_t   *iter,
-                    uint32_t            *document_len,
-                    const uint8_t      **document);
+bson_iter_document (const bson_iter_t *iter,
+                    uint32_t          *document_len,
+                    const uint8_t    **document);
 
 
 double
@@ -302,6 +305,34 @@ bson_iter_oid_unsafe (const bson_iter_t *iter)
 }
 
 
+bool
+bson_iter_dec128 (const bson_iter_t *iter,
+                  bson_dec128_t     *dec);
+
+
+/**
+ * bson_iter_dec128_unsafe:
+ * @iter: A #bson_iter_t.
+ *
+ * Similar to bson_iter_dec128() but performs no integrity checks.
+ *
+ * Returns: A #bson_dec128_t.
+ */
+static BSON_INLINE void
+bson_iter_dec128_unsafe (const bson_iter_t *iter,
+                         bson_dec128_t     *dec)
+{
+   uint64_t low_le;
+   uint64_t high_le;
+
+   memcpy (&low_le, iter->raw + iter->d1, sizeof (low_le));
+   memcpy (&high_le, iter->raw + iter->d1 + 8, sizeof (high_le));
+
+   dec->low = BSON_UINT64_FROM_LE (low_le);
+   dec->high = BSON_UINT64_FROM_LE (high_le);
+}
+
+
 const char *
 bson_iter_key (const bson_iter_t *iter);
 
@@ -388,10 +419,11 @@ bson_iter_timeval_unsafe (const bson_iter_t *iter,
                           struct timeval    *tv)
 {
    int64_t value = bson_iter_int64_unsafe (iter);
+
 #ifdef BSON_OS_WIN32
-   tv->tv_sec = (long) (value / 1000);
+   tv->tv_sec = (long)(value / 1000);
 #else
-   tv->tv_sec = (suseconds_t) (value / 1000);
+   tv->tv_sec = (suseconds_t)(value / 1000);
 #endif
    tv->tv_usec = (value % 1000) * 1000;
 }
@@ -399,8 +431,8 @@ bson_iter_timeval_unsafe (const bson_iter_t *iter,
 
 void
 bson_iter_timestamp (const bson_iter_t *iter,
-                     uint32_t     *timestamp,
-                     uint32_t     *increment);
+                     uint32_t          *timestamp,
+                     uint32_t          *increment);
 
 
 bool
@@ -454,7 +486,7 @@ bson_iter_type (const bson_iter_t *iter);
 static BSON_INLINE bson_type_t
 bson_iter_type_unsafe (const bson_iter_t *iter)
 {
-   return (bson_type_t) (iter->raw + iter->type) [0];
+   return (bson_type_t)(iter->raw + iter->type) [0];
 }
 
 
@@ -465,12 +497,12 @@ bson_iter_recurse (const bson_iter_t *iter,
 
 void
 bson_iter_overwrite_int32 (bson_iter_t *iter,
-                           int32_t value);
+                           int32_t      value);
 
 
 void
 bson_iter_overwrite_int64 (bson_iter_t *iter,
-                           int64_t value);
+                           int64_t      value);
 
 
 void
@@ -479,8 +511,13 @@ bson_iter_overwrite_double (bson_iter_t *iter,
 
 
 void
+bson_iter_overwrite_dec128 (bson_iter_t   *iter,
+                            bson_dec128_t *value);
+
+
+void
 bson_iter_overwrite_bool (bson_iter_t *iter,
-                          bool  value);
+                          bool         value);
 
 
 bool
