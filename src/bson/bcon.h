@@ -42,6 +42,7 @@ BCON_ENSURE_DECLARE (const_char_ptr, const char *)
 BCON_ENSURE_DECLARE (const_char_ptr_ptr, const char **)
 BCON_ENSURE_DECLARE (double, double)
 BCON_ENSURE_DECLARE (double_ptr, double *)
+/* DECIMAL_DATA_TYPE, add BCON macro for decimal type, maybe */
 BCON_ENSURE_DECLARE (const_bson_ptr, const bson_t *)
 BCON_ENSURE_DECLARE (bson_ptr, bson_t *)
 BCON_ENSURE_DECLARE (subtype, bson_subtype_t)
@@ -116,6 +117,7 @@ BCON_ENSURE_DECLARE (const_bson_iter_ptr, const bson_iter_t *)
 
 #define BCONE_UTF8(_val) BCONE_MAGIC, BCON_TYPE_UTF8, \
    BCON_ENSURE_STORAGE (const_char_ptr_ptr, (_val))
+/* DECIMAL_DATA_TYPE BCON magic */
 #define BCONE_DOUBLE(_val) BCONE_MAGIC, BCON_TYPE_DOUBLE, \
    BCON_ENSURE_STORAGE (double_ptr, (_val))
 #define BCONE_DOCUMENT(_val) BCONE_MAGIC, BCON_TYPE_DOCUMENT, \
@@ -188,6 +190,7 @@ typedef enum
    BCON_TYPE_CODEWSCOPE,
    BCON_TYPE_INT32,
    BCON_TYPE_TIMESTAMP,
+   /* DECIMAL_DATA_TYPE add new BCON type */
    BCON_TYPE_INT64,
    BCON_TYPE_MAXKEY,
    BCON_TYPE_MINKEY,
