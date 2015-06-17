@@ -17,7 +17,6 @@
 
 #include <stdarg.h>
 #include <string.h>
-#include <stdio.h>
 #include <math.h>
 
 #include "b64_ntop.h"
@@ -2399,9 +2398,16 @@ _bson_as_json_visit_dec128 (const bson_iter_t   *iter,
                             const bson_dec128_t *value,
                             void                *data)
 {
-   // TODO (dhatch, 06/08/2015) fix this?!?!
-   fprintf (stderr, "Cannot serialize dec128 as JSON!");  // Remove import <stdio.h> with this line
-   exit (EXIT_FAILURE);
+   bson_json_state_t *state = data;
+   char dec128_string[BSON_DEC128_STRING];
+
+   bson_dec128_to_string (value, dec128_string);
+
+   bson_string_append (state->str, "{ \"$numberDecimal\" : \"");
+   bson_string_append (state->str, dec128_string);
+   bson_string_append (state->str, "\" }");
+
+   return false;
 }
 
 
