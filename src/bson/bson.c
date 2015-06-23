@@ -21,6 +21,7 @@
 
 #include "b64_ntop.h"
 #include "bson.h"
+#include "bson-config.h"
 #include "bson-private.h"
 #include "bson-string.h"
 
@@ -1189,6 +1190,7 @@ bson_append_dec128 (bson_t              *bson,
 
    bson_return_val_if_fail (bson, false);
    bson_return_val_if_fail (key, false);
+   bson_return_val_if_fail (value, false);
 
    if (key_length < 0) {
       key_length = (int)strlen (key);
@@ -1204,6 +1206,20 @@ bson_append_dec128 (bson_t              *bson,
                         1, &gZero,
                         16, value_le);
 }
+
+
+#ifdef BSON_HAVE_DECIMAL128
+bool
+bson_append_decimal128 (bson_t     *bson,
+                        const char *key,
+                        int         key_length,
+                        _Decimal128 value)
+{
+   bson_dec128_t v;
+   bson_decimal128_to_dec128(value, &v);
+   return bson_append_dec128(bson, key, key_length, &v);
+}
+#endif
 
 
 bool
@@ -2749,6 +2765,9 @@ static const bson_visitor_t bson_as_json_visitors = {
    _bson_as_json_visit_timestamp,
    _bson_as_json_visit_int64,
    _bson_as_json_visit_dec128,
+#ifdef BSON_HAVE_DECIMAL128 /* avoid duplicate visitation of decimal */
+   NULL,
+#endif
    _bson_as_json_visit_maxkey,
    _bson_as_json_visit_minkey,
 };
