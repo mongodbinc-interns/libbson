@@ -210,7 +210,6 @@ typedef enum
    BSON_TYPE_INT32 = 0x10,
    BSON_TYPE_TIMESTAMP = 0x11,
    BSON_TYPE_INT64 = 0x12,
-   /* DECIMAL_DATA_TYPE add new element */
    BSON_TYPE_MAXKEY = 0x7F,
    BSON_TYPE_MINKEY = 0xFF,
 } bson_type_t;
@@ -258,7 +257,6 @@ typedef struct _bson_value_t
       int64_t            v_int64;
       int32_t            v_int32;
       int8_t             v_int8;
-      /* DECIMAL_DATA_TYPE add union member */
       double             v_double;
       bool               v_bool;
       int64_t            v_datetime;
@@ -456,7 +454,6 @@ typedef struct
                              uint32_t           v_timestamp,
                              uint32_t           v_increment,
                              void              *data);
-   /* DECIMAL_DATA_TYPE add a visitor */
    bool (*visit_int64)      (const bson_iter_t *iter,
                              const char        *key,
                              int64_t            v_int64,

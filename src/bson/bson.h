@@ -121,8 +121,6 @@ BSON_BEGIN_DECLS
 #define BSON_APPEND_DOCUMENT_BEGIN(b,key,child) \
       bson_append_document_begin (b, key, (int)strlen (key), child)
 
-/* DECIMAL_DATA_TYPE add append macro for decimal */
-
 #define BSON_APPEND_DOUBLE(b,key,val) \
       bson_append_double (b, key, (int) strlen (key), val)
 
@@ -636,8 +634,6 @@ bson_append_double (bson_t     *bson,
                     int         key_length,
                     double      value);
 
-
-/* DECIMAL_DATA_TYPE bson_append_decimal method to support macro above */
 
 /**
  * bson_append_document:
