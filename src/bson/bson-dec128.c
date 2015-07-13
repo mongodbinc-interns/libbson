@@ -236,7 +236,16 @@ bson_dec128_to_string (const bson_dec128_t *dec,        /* IN  */
 
    scientific_exponent = significand_digits - 1 + exponent;
 
+   /* The scientific exponent checks are dictated by the string conversion
+    * specification and are somewhat arbitrary cutoffs.
+    *
+    * We must check exponent > 0, because if this is the case, the number
+    * has trailing zeros.  However, we *cannot* output these trailing zeros,
+    * because doing so would change the precision of the value, and would
+    * change stored data if the string converted number is round tripped.
+    */
    if (scientific_exponent >= 12 || scientific_exponent <= -4 ||
+       exponent > 0 ||
        (is_zero && scientific_exponent != 0)) {
       /* Scientific format */
       *(str_out++) = *(significand_read++) + '0';
